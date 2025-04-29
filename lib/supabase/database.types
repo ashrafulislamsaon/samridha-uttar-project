@@ -1,0 +1,331 @@
+export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: {
+          id: string
+          first_name: string | null
+          last_name: string | null
+          email: string
+          phone: string | null
+          address: string | null
+          city: string | null
+          state: string | null
+          postal_code: string | null
+          country: string | null
+          avatar_url: string | null
+          role: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          first_name?: string | null
+          last_name?: string | null
+          email: string
+          phone?: string | null
+          address?: string | null
+          city?: string | null
+          state?: string | null
+          postal_code?: string | null
+          country?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          first_name?: string | null
+          last_name?: string | null
+          email?: string
+          phone?: string | null
+          address?: string | null
+          city?: string | null
+          state?: string | null
+          postal_code?: string | null
+          country?: string | null
+          avatar_url?: string | null
+          role?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      projects: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          description: string | null
+          content: string | null
+          goal_amount: number | null
+          current_amount: number | null
+          start_date: string | null
+          end_date: string | null
+          status: string | null
+          category: string | null
+          featured: boolean | null
+          image_url: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          description?: string | null
+          content?: string | null
+          goal_amount?: number | null
+          current_amount?: number | null
+          start_date?: string | null
+          end_date?: string | null
+          status?: string | null
+          category?: string | null
+          featured?: boolean | null
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          description?: string | null
+          content?: string | null
+          goal_amount?: number | null
+          current_amount?: number | null
+          start_date?: string | null
+          end_date?: string | null
+          status?: string | null
+          category?: string | null
+          featured?: boolean | null
+          image_url?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      donations: {
+        Row: {
+          id: string
+          user_id: string | null
+          project_id: string | null
+          amount: number
+          currency: string | null
+          payment_method: string | null
+          payment_status: string | null
+          transaction_id: string | null
+          is_anonymous: boolean | null
+          donation_type: string | null
+          message: string | null
+          receipt_sent: boolean | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          project_id?: string | null
+          amount: number
+          currency?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          transaction_id?: string | null
+          is_anonymous?: boolean | null
+          donation_type?: string | null
+          message?: string | null
+          receipt_sent?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          project_id?: string | null
+          amount?: number
+          currency?: string | null
+          payment_method?: string | null
+          payment_status?: string | null
+          transaction_id?: string | null
+          is_anonymous?: boolean | null
+          donation_type?: string | null
+          message?: string | null
+          receipt_sent?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      news: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          summary: string | null
+          content: string
+          author_id: string | null
+          image_url: string | null
+          published: boolean | null
+          featured: boolean | null
+          category: string | null
+          tags: string[] | null
+          view_count: number | null
+          created_at: string
+          updated_at: string
+          published_at: string | null
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          summary?: string | null
+          content: string
+          author_id?: string | null
+          image_url?: string | null
+          published?: boolean | null
+          featured?: boolean | null
+          category?: string | null
+          tags?: string[] | null
+          view_count?: number | null
+          created_at?: string
+          updated_at?: string
+          published_at?: string | null
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          summary?: string | null
+          content?: string
+          author_id?: string | null
+          image_url?: string | null
+          published?: boolean | null
+          featured?: boolean | null
+          category?: string | null
+          tags?: string[] | null
+          view_count?: number | null
+          created_at?: string
+          updated_at?: string
+          published_at?: string | null
+        }
+      }
+      events: {
+        Row: {
+          id: string
+          title: string
+          slug: string
+          description: string | null
+          content: string | null
+          location: string | null
+          start_date: string
+          end_date: string | null
+          image_url: string | null
+          registration_required: boolean | null
+          registration_url: string | null
+          max_attendees: number | null
+          status: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          slug: string
+          description?: string | null
+          content?: string | null
+          location?: string | null
+          start_date: string
+          end_date?: string | null
+          image_url?: string | null
+          registration_required?: boolean | null
+          registration_url?: string | null
+          max_attendees?: number | null
+          status?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          slug?: string
+          description?: string | null
+          content?: string | null
+          location?: string | null
+          start_date?: string
+          end_date?: string | null
+          image_url?: string | null
+          registration_required?: boolean | null
+          registration_url?: string | null
+          max_attendees?: number | null
+          status?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      testimonials: {
+        Row: {
+          id: string
+          name: string
+          role: string | null
+          content: string
+          image_url: string | null
+          rating: number | null
+          is_featured: boolean | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          role?: string | null
+          content: string
+          image_url?: string | null
+          rating?: number | null
+          is_featured?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          role?: string | null
+          content?: string
+          image_url?: string | null
+          rating?: number | null
+          is_featured?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      subscribers: {
+        Row: {
+          id: string
+          email: string
+          first_name: string | null
+          last_name: string | null
+          subscribed: boolean | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          email: string
+          first_name?: string | null
+          last_name?: string | null
+          subscribed?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          email?: string
+          first_name?: string | null
+          last_name?: string | null
+          subscribed?: boolean | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+    }
+  }
+}
