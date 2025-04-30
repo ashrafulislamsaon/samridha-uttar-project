@@ -1,14 +1,12 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import { getSupabaseClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle } from "lucide-react"
-import { useLanguage } from "@/context/language-context"
 import ContentEditor from "@/components/admin/content-editor"
 import type { ContentItem, ContentSection } from "@/lib/types/content"
 
@@ -24,48 +22,52 @@ export default function ContentManagementPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<ContentSection>("hero")
-  const { t } = useLanguage()
   const supabase = getSupabaseClient()
-  const router = useRouter()
 
   useEffect(() => {
+    async function fetchContent() {
+      try {
+        console.log("Fetching content...")
+        setLoading(true)
+
+        const { data, error } = await supabase.from("content").select("*").order("display_order", { ascending: true })
+
+        if (error) {
+          console.error("Supabase error:", error)
+          throw error
+        }
+
+        console.log("Content data:", data)
+
+        // Group content by section
+        const contentBySection: Record<ContentSection, ContentItem[]> = {
+          hero: [],
+          about: [],
+          mission: [],
+          programs: [],
+          impact: [],
+          footer: [],
+        }
+
+        data?.forEach((item) => {
+          const section = item.section as ContentSection
+          if (contentBySection[section]) {
+            contentBySection[section].push(item as ContentItem)
+          }
+        })
+
+        setContent(contentBySection)
+        setError(null)
+      } catch (error: any) {
+        console.error("Error fetching content:", error)
+        setError(error.message || "Failed to fetch content")
+      } finally {
+        setLoading(false)
+      }
+    }
+
     fetchContent()
   }, [])
-
-  const fetchContent = async () => {
-    try {
-      setLoading(true)
-      const { data, error } = await supabase.from("content").select("*").order("display_order", { ascending: true })
-
-      if (error) {
-        throw error
-      }
-
-      // Group content by section
-      const contentBySection: Record<ContentSection, ContentItem[]> = {
-        hero: [],
-        about: [],
-        mission: [],
-        programs: [],
-        impact: [],
-        footer: [],
-      }
-
-      data?.forEach((item) => {
-        const section = item.section as ContentSection
-        if (contentBySection[section]) {
-          contentBySection[section].push(item as ContentItem)
-        }
-      })
-
-      setContent(contentBySection)
-    } catch (error: any) {
-      console.error("Error fetching content:", error)
-      setError(error.message || "Failed to fetch content")
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleContentUpdate = async (id: string, updates: any) => {
     try {
@@ -81,8 +83,28 @@ export default function ContentManagementPage() {
         throw error
       }
 
-      // Refresh content
-      await fetchContent()
+      // Update local state instead of refetching
+      setContent((prevContent) => {
+        const newContent = { ...prevContent }
+
+        // Find the section that contains this item
+        Object.keys(newContent).forEach((sectionKey) => {
+          const section = sectionKey as ContentSection
+          const index = newContent[section].findIndex((item) => item.id === id)
+
+          if (index !== -1) {
+            // Update the item in that section
+            newContent[section] = [
+              ...newContent[section].slice(0, index),
+              { ...newContent[section][index], ...updates },
+              ...newContent[section].slice(index + 1),
+            ]
+          }
+        })
+
+        return newContent
+      })
+
       return { success: true }
     } catch (error: any) {
       console.error("Error updating content:", error)
@@ -92,20 +114,30 @@ export default function ContentManagementPage() {
 
   const handleContentCreate = async (sectionName: ContentSection, newContent: any) => {
     try {
-      const { error } = await supabase.from("content").insert({
-        section: sectionName,
-        ...newContent,
-        display_order: content[sectionName].length + 1,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
+      const { data, error } = await supabase
+        .from("content")
+        .insert({
+          section: sectionName,
+          ...newContent,
+          display_order: content[sectionName].length + 1,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select()
 
       if (error) {
         throw error
       }
 
-      // Refresh content
-      await fetchContent()
+      // Update local state instead of refetching
+      setContent((prevContent) => {
+        const newContent = { ...prevContent }
+        if (data && data.length > 0) {
+          newContent[sectionName] = [...newContent[sectionName], data[0] as ContentItem]
+        }
+        return newContent
+      })
+
       return { success: true }
     } catch (error: any) {
       console.error("Error creating content:", error)
@@ -121,8 +153,19 @@ export default function ContentManagementPage() {
         throw error
       }
 
-      // Refresh content
-      await fetchContent()
+      // Update local state instead of refetching
+      setContent((prevContent) => {
+        const newContent = { ...prevContent }
+
+        // Find the section that contains this item and remove it
+        Object.keys(newContent).forEach((sectionKey) => {
+          const section = sectionKey as ContentSection
+          newContent[section] = newContent[section].filter((item) => item.id !== id)
+        })
+
+        return newContent
+      })
+
       return { success: true }
     } catch (error: any) {
       console.error("Error deleting content:", error)
@@ -133,7 +176,10 @@ export default function ContentManagementPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p>Loading content...</p>
+        </div>
       </div>
     )
   }

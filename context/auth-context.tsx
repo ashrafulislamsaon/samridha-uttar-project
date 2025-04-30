@@ -52,21 +52,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data } = await supabase.auth.getUser()
+      try {
+        const { data } = await supabase.auth.getUser()
 
-      if (data.user) {
-        const userWithRole = await updateUserWithRole(data.user)
-        setUser(userWithRole)
-      } else {
+        if (data.user) {
+          const userWithRole = await updateUserWithRole(data.user)
+          setUser(userWithRole)
+          console.log("User with role:", userWithRole) // Debug log
+        } else {
+          setUser(null)
+        }
+      } catch (error) {
+        console.error("Error getting user:", error)
         setUser(null)
+      } finally {
+        setLoading(false)
       }
-
-      setLoading(false)
     }
 
     getUser()
 
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth state change:", event) // Debug log
       if (event === "SIGNED_IN" && session) {
         const userWithRole = await updateUserWithRole(session.user)
         setUser(userWithRole)
@@ -84,57 +91,76 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-    if (!error && data.user) {
-      const userWithRole = await updateUserWithRole(data.user)
-      setUser(userWithRole)
-      router.push("/dashboard")
-      router.refresh()
+      if (!error && data.user) {
+        const userWithRole = await updateUserWithRole(data.user)
+        setUser(userWithRole)
+        router.push("/dashboard")
+        router.refresh()
+      }
+
+      return { error }
+    } catch (error) {
+      console.error("Error signing in:", error)
+      return { error }
     }
-
-    return { error }
   }
 
   const signUp = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
-
-    // When a user signs up, create a profile with default role "user"
-    if (!error && data.user) {
-      await supabase.from("profiles").upsert({
-        id: data.user.id,
-        email: email,
-        role: "user",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
       })
-    }
 
-    return { data, error }
+      // When a user signs up, create a profile with default role "user"
+      if (!error && data.user) {
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          email: email,
+          role: "user",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+      }
+
+      return { data, error }
+    } catch (error) {
+      console.error("Error signing up:", error)
+      return { data: null, error }
+    }
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-    router.push("/")
-    router.refresh()
+    try {
+      await supabase.auth.signOut()
+      setUser(null)
+      router.push("/")
+      router.refresh()
+    } catch (error) {
+      console.error("Error signing out:", error)
+    }
   }
 
   const resetPassword = async (email: string) => {
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
-    })
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      })
 
-    return { error }
+      return { error }
+    } catch (error) {
+      console.error("Error resetting password:", error)
+      return { error }
+    }
   }
 
   const isAdmin = () => {

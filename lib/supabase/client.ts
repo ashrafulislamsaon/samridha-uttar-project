@@ -6,6 +6,7 @@ let supabaseClient: ReturnType<typeof createClientComponentClient<Database>> | n
 
 export const getSupabaseClient = () => {
   if (!supabaseClient) {
+    console.log("Creating new Supabase client")
     supabaseClient = createClientComponentClient<Database>()
   }
   return supabaseClient
