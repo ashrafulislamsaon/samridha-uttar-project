@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const secretKey = searchParams.get("key")
 
     // Check if the secret key matches (replace with your own secure key)
-    const ADMIN_SECRET_KEY = "your-secure-admin-key"
+    const ADMIN_SECRET_KEY = "aisislam2000mt2025"
 
     if (!email || !secretKey || secretKey !== ADMIN_SECRET_KEY) {
       return NextResponse.json({ success: false, message: "Invalid parameters or unauthorized" }, { status: 401 })
