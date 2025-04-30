@@ -9,7 +9,7 @@ import UserMenu from "@/components/user-menu"
 import { useLanguage } from "@/context/language-context"
 
 export default function Header() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
 
   return (
     <>
@@ -23,7 +23,7 @@ export default function Header() {
             <Link href="#" className="text-white hover:text-green-100">
               <Youtube size={18} className="inline mr-1" />
             </Link>
-            <Link href="mailto:info@yourfoundation.org" className="text-white hover:text-green-100">
+            <Link href="mailto:info@samridhauttar.org" className="text-white hover:text-green-100">
               <Mail size={18} className="inline mr-1" />
             </Link>
             <Link href="tel:+1234567890" className="text-white hover:text-green-100">
@@ -41,14 +41,14 @@ export default function Header() {
             <Link href="/" className="flex items-center">
               <Image
                 src="/placeholder.svg?height=60&width=60"
-                alt="Foundation Logo"
+                alt="Samridha Uttar Logo"
                 width={60}
                 height={60}
                 className="mr-3"
               />
               <div>
-                <h1 className="text-2xl font-bold text-green-700">{t("header.foundation")}</h1>
-                <p className="text-sm text-gray-600">{t("header.tagline")}</p>
+                <h1 className="text-xl md:text-2xl font-bold text-green-700">Samridha Uttar</h1>
+                <p className="text-xs md:text-sm text-gray-600">Prosperous North (Education, Service, Dawah)</p>
               </div>
             </Link>
           </div>

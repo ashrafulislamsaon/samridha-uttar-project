@@ -5,13 +5,14 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/context/auth-context"
 import { LanguageProvider } from "@/context/language-context"
+import { ContentProvider } from "@/context/content-context"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Your Foundation - Serving Humanity",
+  title: "Samridha Uttar - Prosperous North (Education, Service, Dawah)",
   description:
-    "A non-profit organization dedicated to serving humanity through various charitable programs and initiatives.",
+    "A non-profit organization dedicated to serving humanity through education, service, and dawah initiatives.",
     generator: 'v0.dev'
 }
 
@@ -25,7 +26,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
-            <LanguageProvider>{children}</LanguageProvider>
+            <LanguageProvider>
+              <ContentProvider>{children}</ContentProvider>
+            </LanguageProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

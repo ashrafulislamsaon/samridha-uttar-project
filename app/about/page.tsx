@@ -1,11 +1,19 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import MainNavigation from "@/components/main-navigation"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import { getContentBySection } from "@/app/actions/content"
+import DynamicAboutContent from "@/components/dynamic-about-content"
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  // Fetch content for the about page
+  const aboutContent = await getContentBySection("about")
+  const missionContent = await getContentBySection("mission")
+
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Top Bar and Header would be included here - consider making a layout component */}
+      <Header />
       <MainNavigation />
 
       <main className="flex-grow">
@@ -18,7 +26,9 @@ export default function AboutPage() {
             className="object-cover"
           />
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <h1 className="text-4xl font-bold text-white">About Us</h1>
+            <h1 className="text-4xl font-bold text-white">
+              <DynamicAboutContent content={aboutContent} contentKey="main-heading" type="title" fallback="About Us" />
+            </h1>
           </div>
         </div>
 
@@ -27,24 +37,42 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               <div>
-                <h2 className="text-3xl font-bold text-green-700 mb-6">Our Mission</h2>
-                <p className="text-gray-700 mb-4">
-                  Our mission is to serve humanity by providing essential services to those in need, regardless of their
-                  background, religion, or ethnicity. We strive to create a world where everyone has access to
-                  education, healthcare, and basic necessities.
-                </p>
+                <h2 className="text-3xl font-bold text-green-700 mb-6">
+                  <DynamicAboutContent
+                    content={missionContent}
+                    contentKey="mission-statement"
+                    type="title"
+                    fallback="Our Mission"
+                  />
+                </h2>
+                <div className="text-gray-700 mb-4">
+                  <DynamicAboutContent
+                    content={missionContent}
+                    contentKey="mission-statement"
+                    fallback="Our mission is to serve humanity by providing essential services to those in need, regardless of their background, religion, or ethnicity. We strive to create a world where everyone has access to education, healthcare, and basic necessities."
+                  />
+                </div>
                 <p className="text-gray-700 mb-4">
                   Through our various programs and initiatives, we aim to empower communities and individuals to build a
                   better future for themselves and generations to come.
                 </p>
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-green-700 mb-6">Our Vision</h2>
-                <p className="text-gray-700 mb-4">
-                  We envision a world where poverty, hunger, and inequality are eliminated, and every person has the
-                  opportunity to live a dignified life. We believe in the power of compassion, generosity, and
-                  collective action to transform lives and communities.
-                </p>
+                <h2 className="text-3xl font-bold text-green-700 mb-6">
+                  <DynamicAboutContent
+                    content={missionContent}
+                    contentKey="vision-statement"
+                    type="title"
+                    fallback="Our Vision"
+                  />
+                </h2>
+                <div className="text-gray-700 mb-4">
+                  <DynamicAboutContent
+                    content={missionContent}
+                    contentKey="vision-statement"
+                    fallback="We envision a world where poverty, hunger, and inequality are eliminated, and every person has the opportunity to live a dignified life. We believe in the power of compassion, generosity, and collective action to transform lives and communities."
+                  />
+                </div>
                 <p className="text-gray-700 mb-4">
                   Our vision is to be a leading organization in humanitarian work, known for our integrity,
                   effectiveness, and commitment to sustainable development.
@@ -57,16 +85,26 @@ export default function AboutPage() {
         {/* History */}
         <section className="py-12 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center text-green-700 mb-8">Our History</h2>
+            <h2 className="text-3xl font-bold text-center text-green-700 mb-8">
+              <DynamicAboutContent
+                content={aboutContent}
+                contentKey="history-heading"
+                type="title"
+                fallback="Our History"
+              />
+            </h2>
             <div className="max-w-3xl mx-auto">
-              <p className="text-gray-700 mb-4">
-                Your Foundation was established in 2005 with a simple goal: to help those in need. What began as a small
-                initiative by a group of dedicated individuals has grown into a recognized non-profit organization with
-                a global reach.
-              </p>
+              <div className="text-gray-700 mb-4">
+                <DynamicAboutContent
+                  content={aboutContent}
+                  contentKey="history-content"
+                  fallback="Samridha Uttar was established with a simple goal: to help those in need. What began as a small initiative by a group of dedicated individuals has grown into a recognized non-profit organization with a global reach."
+                />
+              </div>
               <p className="text-gray-700 mb-4">
                 Over the years, we have implemented numerous projects in education, healthcare, emergency relief, and
-                community development. Our work has touched the lives of thousands of people across multiple countries.
+                community development. Our work has touched the lives of thousands of people across multiple
+                communities.
               </p>
               <p className="text-gray-700 mb-4">
                 Despite our growth, we remain committed to our core values of compassion, integrity, and excellence in
@@ -86,7 +124,7 @@ export default function AboutPage() {
                   </li>
                   <li className="flex">
                     <span className="font-bold mr-4">2012:</span>
-                    <span>Expanded operations to three additional countries</span>
+                    <span>Expanded operations to three additional regions</span>
                   </li>
                   <li className="flex">
                     <span className="font-bold mr-4">2015:</span>
@@ -105,7 +143,9 @@ export default function AboutPage() {
         {/* Team */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center text-green-700 mb-8">Our Team</h2>
+            <h2 className="text-3xl font-bold text-center text-green-700 mb-8">
+              <DynamicAboutContent content={aboutContent} contentKey="team-heading" type="title" fallback="Our Team" />
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[1, 2, 3, 4].map((item) => (
                 <div key={item} className="text-center">
@@ -131,10 +171,20 @@ export default function AboutPage() {
         {/* Call to Action */}
         <section className="py-12 bg-green-600 text-white">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-bold mb-4">Join Us in Making a Difference</h2>
+            <h2 className="text-3xl font-bold mb-4">
+              <DynamicAboutContent
+                content={aboutContent}
+                contentKey="cta-heading"
+                type="title"
+                fallback="Join Us in Making a Difference"
+              />
+            </h2>
             <p className="text-xl mb-8 max-w-2xl mx-auto">
-              Whether through volunteering, donating, or spreading awareness, your support can help us continue our
-              mission.
+              <DynamicAboutContent
+                content={aboutContent}
+                contentKey="cta-content"
+                fallback="Whether through volunteering, donating, or spreading awareness, your support can help us continue our mission."
+              />
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button className="bg-white text-green-600 hover:bg-gray-100">Volunteer With Us</Button>
@@ -144,7 +194,7 @@ export default function AboutPage() {
         </section>
       </main>
 
-      {/* Footer would be included here */}
+      <Footer />
     </div>
   )
 }

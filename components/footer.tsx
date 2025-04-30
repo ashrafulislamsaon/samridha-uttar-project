@@ -9,6 +9,8 @@ import { Facebook, Youtube, Mail } from "lucide-react"
 import { subscribeToNewsletter } from "@/app/actions"
 import { toast } from "@/hooks/use-toast"
 import { useLanguage } from "@/context/language-context"
+import { useContent } from "@/context/content-context"
+import DynamicContent from "@/components/dynamic-content"
 
 function SubscribeButton() {
   const { pending } = useFormStatus()
@@ -24,6 +26,7 @@ function SubscribeButton() {
 export default function Footer() {
   const [email, setEmail] = useState("")
   const { t } = useLanguage()
+  const { content } = useContent()
 
   async function handleSubscribe(formData: FormData) {
     const result = await subscribeToNewsletter(formData)
@@ -49,7 +52,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold mb-4">{t("footer.about")}</h3>
-            <p className="text-green-100 mb-4">{t("footer.about_desc")}</p>
+            <p className="text-green-100 mb-4">
+              <DynamicContent section="footer" contentKey="about" fallback={t("footer.about_desc")} />
+            </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-white hover:text-green-300">
                 <Facebook size={20} />
@@ -57,7 +62,7 @@ export default function Footer() {
               <Link href="#" className="text-white hover:text-green-300">
                 <Youtube size={20} />
               </Link>
-              <Link href="#" className="text-white hover:text-green-300">
+              <Link href="mailto:info@samridhauttar.org" className="text-white hover:text-green-300">
                 <Mail size={20} />
               </Link>
             </div>
@@ -83,10 +88,18 @@ export default function Footer() {
           <div>
             <h3 className="text-xl font-bold mb-4">{t("footer.contact")}</h3>
             <address className="not-italic text-green-100 space-y-2">
-              <p>123 Foundation Street</p>
-              <p>City, State 12345</p>
-              <p>Email: info@yourfoundation.org</p>
-              <p>Phone: +1 (234) 567-8900</p>
+              <p>
+                <DynamicContent section="footer" contentKey="address-line1" fallback="123 Foundation Street" />
+              </p>
+              <p>
+                <DynamicContent section="footer" contentKey="address-line2" fallback="City, State 12345" />
+              </p>
+              <p>
+                Email: <DynamicContent section="footer" contentKey="email" fallback="info@samridhauttar.org" />
+              </p>
+              <p>
+                Phone: <DynamicContent section="footer" contentKey="phone" fallback="+1 (234) 567-8900" />
+              </p>
             </address>
           </div>
           <div>
@@ -108,7 +121,8 @@ export default function Footer() {
         </div>
         <div className="border-t border-green-700 mt-8 pt-8 text-center text-green-100">
           <p>
-            © {new Date().getFullYear()} {t("header.foundation")}. {t("footer.rights")}
+            © {new Date().getFullYear()}{" "}
+            <DynamicContent section="footer" contentKey="copyright" fallback="Samridha Uttar" />. {t("footer.rights")}
           </p>
         </div>
       </div>

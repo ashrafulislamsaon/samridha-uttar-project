@@ -5,28 +5,44 @@ import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/context/language-context"
+import { useContent } from "@/context/content-context"
+import DynamicContent from "@/components/dynamic-content"
+import Link from "next/link"
 
 export default function HeroSlider() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const { t } = useLanguage()
+  const { content } = useContent()
 
-  const slides = [
-    {
-      image: "/placeholder.svg?height=600&width=1600&text=Foundation+Building",
-      title: t("hero.title1"),
-      description: t("hero.desc1"),
-    },
-    {
-      image: "/placeholder.svg?height=600&width=1600&text=Education+Program",
-      title: t("hero.title2"),
-      description: t("hero.desc2"),
-    },
-    {
-      image: "/placeholder.svg?height=600&width=1600&text=Healthcare+Initiative",
-      title: t("hero.title3"),
-      description: t("hero.desc3"),
-    },
-  ]
+  // Get hero content from the content context
+  const heroContent = content.hero || []
+
+  // Create slides from dynamic content or use fallback
+  const slides =
+    heroContent.length > 0
+      ? heroContent.map((item) => ({
+          image: item.image_url || "/placeholder.svg?height=600&width=1600&text=Samridha+Uttar",
+          title: item.title_en,
+          description: item.content_en,
+          link: item.link,
+        }))
+      : [
+          {
+            image: "/placeholder.svg?height=600&width=1600&text=Samridha+Uttar",
+            title: "Samridha Uttar - Prosperous North",
+            description: "Supporting communities through education, service, and dawah initiatives",
+          },
+          {
+            image: "/placeholder.svg?height=600&width=1600&text=Education+Program",
+            title: t("hero.title2"),
+            description: t("hero.desc2"),
+          },
+          {
+            image: "/placeholder.svg?height=600&width=1600&text=Healthcare+Initiative",
+            title: t("hero.title3"),
+            description: t("hero.desc3"),
+          },
+        ]
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1))
@@ -61,9 +77,32 @@ export default function HeroSlider() {
             />
             <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
               <div className="text-center text-white px-4 max-w-3xl">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4">{slide.title}</h2>
-                <p className="text-lg md:text-xl mb-6">{slide.description}</p>
-                <Button className="bg-green-600 hover:bg-green-700 text-white">{t("hero.donate")}</Button>
+                <h2 className="text-3xl md:text-5xl font-bold mb-4">
+                  {heroContent.length > 0 ? (
+                    <DynamicContent
+                      section="hero"
+                      contentKey={heroContent[index]?.key || "main-heading"}
+                      type="title"
+                      fallback={slide.title}
+                    />
+                  ) : (
+                    slide.title
+                  )}
+                </h2>
+                <p className="text-lg md:text-xl mb-6">
+                  {heroContent.length > 0 ? (
+                    <DynamicContent
+                      section="hero"
+                      contentKey={heroContent[index]?.key || "main-heading"}
+                      fallback={slide.description}
+                    />
+                  ) : (
+                    slide.description
+                  )}
+                </p>
+                <Button className="bg-green-600 hover:bg-green-700 text-white">
+                  {slide.link ? <Link href={slide.link}>{t("hero.donate")}</Link> : t("hero.donate")}
+                </Button>
               </div>
             </div>
           </div>
