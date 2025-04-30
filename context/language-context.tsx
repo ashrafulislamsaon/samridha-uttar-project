@@ -180,7 +180,7 @@ const bnTranslations: Record<string, string> = {
   "donation.cash": "নগদ",
   "donation.mobile_provider": "মোবাইল ব্যাংকিং প্রদানকারী",
   "donation.submit": "দান করুন",
-  "donation.processing": "প্রক্রিয়াকরণ হচ���ছে...",
+  "donation.processing": "প্রক্রিয়াকরণ হচ�����ছে...",
   "donation.secure": "আপনি আপনার ফাউন্ডেশনে নিরাপদে অনলাইনে দান করতে পারেন।",
   "donation.details": "আরও বিবরণের জন্য এখানে ক্লিক করুন",
 

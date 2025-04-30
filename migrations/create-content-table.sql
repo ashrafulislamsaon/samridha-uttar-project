@@ -36,3 +36,20 @@ VALUES
   ('impact', 'stats-heading', 'Our Impact', 'Making a difference in communities across the region', true, 1),
   ('footer', 'about', 'About Samridha Uttar', 'Samridha Uttar is dedicated to serving humanity through various charitable programs and initiatives focused on education, service, and dawah.', true, 1)
 ON CONFLICT (section, key) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id),
+  first_name TEXT,
+  last_name TEXT,
+  email TEXT NOT NULL,
+  phone TEXT,
+  address TEXT,
+  city TEXT,
+  state TEXT,
+  postal_code TEXT,
+  country TEXT,
+  avatar_url TEXT,
+  role TEXT DEFAULT 'user',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
