@@ -123,13 +123,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // When a user signs up, create a profile with default role "user"
       if (!error && data.user) {
-        await supabase.from("profiles").upsert({
-          id: data.user.id,
-          email: email,
-          role: "user",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        })
+        try {
+          console.log("Creating profile for new user:", data.user.id)
+
+          const { error: profileError } = await supabase.from("profiles").upsert(
+            {
+              id: data.user.id,
+              email: email.toLowerCase(),
+              role: "user",
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+            {
+              onConflict: "id",
+            },
+          )
+
+          if (profileError) {
+            console.error("Error creating profile:", profileError)
+          }
+        } catch (profileErr) {
+          console.error("Exception creating profile:", profileErr)
+        }
       }
 
       return { data, error }
